@@ -610,7 +610,8 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
 
     one_hot_labels = tf.one_hot(labels, depth=num_labels, dtype=tf.float32)
 
-    per_example_loss = -tf.reduce_sum(one_hot_labels * log_probs, axis=-1)
+    # per_example_loss = -tf.reduce_sum(one_hot_labels * log_probs, axis=-1)
+    per_example_loss = -tf.squre(logits-label_scores)
     loss = tf.reduce_mean(per_example_loss)
 
     return (loss, per_example_loss, logits, probabilities)
@@ -814,7 +815,8 @@ def main(_):
 
   processor = processors[task_name]()
 
-  label_list = processor.get_labels()
+  # label_list = processor.get_labels()
+  label_list = None  
 
   tokenizer = tokenization.FullTokenizer(
       vocab_file=FLAGS.vocab_file, do_lower_case=FLAGS.do_lower_case)

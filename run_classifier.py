@@ -848,7 +848,7 @@ def main(_):
   model_fn = model_fn_builder(
       bert_config=bert_config,
       # num_labels=len(label_list),
-      num_labels=None,
+      num_labels=0,
       init_checkpoint=FLAGS.init_checkpoint,
       learning_rate=FLAGS.learning_rate,
       num_train_steps=num_train_steps,

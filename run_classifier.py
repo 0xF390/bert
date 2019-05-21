@@ -611,7 +611,9 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
     log_probs = tf.nn.log_softmax(logits, axis=-1)
 
     one_hot_labels = tf.one_hot(labels, depth=num_labels, dtype=tf.float32)
+    print("--------------------------")
     print(labels)
+    print("--------------------------")
     # per_example_loss = -tf.reduce_sum(one_hot_labels * log_probs, axis=-1)
     per_example_loss = -tf.square(logits-label_scores)
     loss = tf.reduce_mean(per_example_loss)

@@ -815,8 +815,7 @@ def main(_):
 
   processor = processors[task_name]()
 
-  # label_list = processor.get_labels()
-  label_list = None  
+  label_list = processor.get_labels()
 
   tokenizer = tokenization.FullTokenizer(
       vocab_file=FLAGS.vocab_file, do_lower_case=FLAGS.do_lower_case)
@@ -848,7 +847,8 @@ def main(_):
 
   model_fn = model_fn_builder(
       bert_config=bert_config,
-      num_labels=len(label_list),
+      # num_labels=len(label_list),
+      num_labels=None,
       init_checkpoint=FLAGS.init_checkpoint,
       learning_rate=FLAGS.learning_rate,
       num_train_steps=num_train_steps,

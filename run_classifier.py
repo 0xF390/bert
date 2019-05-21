@@ -492,7 +492,7 @@ def file_based_convert_examples_to_features(
                                      max_seq_length, tokenizer)
 
     def create_int_feature(values):
-      f = tf.train.Feature(int64_list=tf.train.FloatList(value=list(values)))
+      f = tf.train.Feature(float_list=tf.train.FloatList(value=list(apply(float,values))))
       return f
 
     features = collections.OrderedDict()

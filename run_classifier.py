@@ -456,7 +456,9 @@ def convert_single_example(ex_index, example, label_list, max_seq_length,
   assert len(input_mask) == max_seq_length
   assert len(segment_ids) == max_seq_length
 
-  label_id = label_map[example.label]
+  # print(label_map, example, example.label)
+  # label_id = label_map[example.label]
+  label_id = example.label
   if ex_index < 5:
     tf.logging.info("*** Example ***")
     tf.logging.info("guid: %s" % (example.guid))
@@ -465,7 +467,7 @@ def convert_single_example(ex_index, example, label_list, max_seq_length,
     tf.logging.info("input_ids: %s" % " ".join([str(x) for x in input_ids]))
     tf.logging.info("input_mask: %s" % " ".join([str(x) for x in input_mask]))
     tf.logging.info("segment_ids: %s" % " ".join([str(x) for x in segment_ids]))
-    tf.logging.info("label: %s (id = %d)" % (example.label, label_id))
+    tf.logging.info(f"label: {example.label} (id = {label_id})")
 
   feature = InputFeatures(
       input_ids=input_ids,
@@ -490,7 +492,7 @@ def file_based_convert_examples_to_features(
                                      max_seq_length, tokenizer)
 
     def create_int_feature(values):
-      f = tf.train.Feature(int64_list=tf.train.Int64List(value=list(values)))
+      f = tf.train.Feature(float_list=tf.train.FloatList(value=list(map(float,values))))
       return f
 
     features = collections.OrderedDict()
@@ -609,8 +611,11 @@ def create_model(bert_config, is_training, input_ids, input_mask, segment_ids,
     log_probs = tf.nn.log_softmax(logits, axis=-1)
 
     one_hot_labels = tf.one_hot(labels, depth=num_labels, dtype=tf.float32)
-
-    per_example_loss = -tf.reduce_sum(one_hot_labels * log_probs, axis=-1)
+    print("--------------------------")
+    print(labels)
+    print("--------------------------")
+    # per_example_loss = -tf.reduce_sum(one_hot_labels * log_probs, axis=-1)
+    per_example_loss = -tf.square(logits-label_scores)
     loss = tf.reduce_mean(per_example_loss)
 
     return (loss, per_example_loss, logits, probabilities)
